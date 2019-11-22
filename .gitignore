@@ -9,3 +9,4 @@ src/solutions
 install-ubuntu.sh
 /term2_sim_linux
 .vscode/launch.json
+.vscode/settings.json
