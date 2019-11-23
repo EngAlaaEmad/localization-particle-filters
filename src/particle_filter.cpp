@@ -88,6 +88,17 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
    *   probably find it useful to implement this method and use it as a helper 
    *   during the updateWeights phase.
    */
+  for (auto landmark_obs : observations){   // for each observation
+    double min_dist = __DBL_MAX__;
+    for (auto landmark_pred : predicted){   // check all nearby landmarks, find the closest one
+      double curr_dist = dist(landmark_obs.x, landmark_obs.y, landmark_pred.x, landmark_pred.y);
+      if (curr_dist < min_dist){
+        curr_dist = min_dist;
+        landmark_obs.id = landmark_pred.id; // assign a landmark ID to each measurement
+      }
+
+    }
+  }
 
 }
 
@@ -107,6 +118,44 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
    *   and the following is a good resource for the actual equation to implement
    *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
    */
+  
+  
+  for (int i = 0; i < num_particles; i++){  // for each particle
+    // collect landmarks in range
+    vector<LandmarkObs> landmarks_in_range;
+    for (auto landmark : map_landmarks.landmark_list){
+      if (dist(landmark.x_f, landmark.y_f, particles[i].x, particles[i].y) < sensor_range){
+        LandmarkObs new_landmark;
+        new_landmark.x = landmark.x_f;
+        new_landmark.y = landmark.y_f;
+        new_landmark.id = landmark.id_i;
+      }
+    }
+    // transform observations to map coordinates
+    vector<LandmarkObs> measurements;
+    for (int j = 0; j < observations.size(); j++){
+      LandmarkObs transformed_obs;
+      transformed_obs.x = particles[i].x + observations[i].x * cos(particles[i].theta) - observations[i].y * sin(particles[i].theta);
+      transformed_obs.y = particles[i].y + observations[i].x * sin(particles[i].theta) + observations[i].y * cos(particles[i].theta);
+      // data association between transformed obs and map landmarks (?)
+      measurements.push_back(transformed_obs);
+    }
+    dataAssociation(landmarks_in_range, measurements); // measurements will now be assigned to landmarks
+    // calculate weights
+    double new_weight = 1.0;
+    for (auto measurement : measurements){
+      double denom = (2.0 * M_PI * std_landmark[0] * std_landmark[1]);
+      double x = measurement.x;
+      double y = measurement.y;
+      double mu_x = map_landmarks.landmark_list[measurement.id - 1].x_f;  // cheating a bit because landmarks are in a row
+      double mu_y = map_landmarks.landmark_list[measurement.id - 1].y_f;  // this is messed up
+      double exp_part = exp(-( pow(x-mu_x , 2)/(2*pow(std_landmark[1], 2)) + pow(y-mu_y, 2)/(2*pow(std_landmark[1], 2))));
+      double prob = exp_part / denom;
+      new_weight *= prob;
+    }
+  }
+  
+  
 
 }
 
