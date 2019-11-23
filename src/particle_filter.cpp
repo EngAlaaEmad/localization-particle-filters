@@ -30,6 +30,9 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
    * NOTE: Consult particle_filter.h for more information about this method 
    *   (and others in this file).
    */
+
+  std::cout << "Initializing particle filter..." << std::endl;
+
   num_particles = 20;  // TODO: Set the number of particles
 
   // Create normal distributions from initial location estimate
@@ -49,6 +52,8 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     particles.push_back(new_particle);
   }
 
+  std::cout << "Particle filter initialized!" << std::endl;
+
 }
 
 void ParticleFilter::prediction(double delta_t, double std_pos[], 
@@ -60,6 +65,9 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
    *  http://en.cppreference.com/w/cpp/numeric/random/normal_distribution
    *  http://www.cplusplus.com/reference/random/default_random_engine/
    */
+
+  std::cout << "Starting prediction step..." << std::endl;
+
   for (int i = 0; i < num_particles; i++){
 
     double theta_pred = particles[i].theta + yaw_rate * delta_t;
@@ -76,6 +84,9 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
     particles[i].y = dist_y(gen);
     particles[i].theta = dist_theta(gen);
   }
+
+  std::cout << "Prediction step done!" << std::endl;
+
 }
 
 void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, 
@@ -88,6 +99,9 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
    *   probably find it useful to implement this method and use it as a helper 
    *   during the updateWeights phase.
    */
+
+  std::cout << "Starting data association..." << std::endl;
+
   for (auto landmark_obs : observations){   // for each observation
     double min_dist = __DBL_MAX__;
     for (auto landmark_pred : predicted){   // check all nearby landmarks, find the closest one
@@ -99,6 +113,8 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
 
     }
   }
+
+  std::cout << "Data association finished!" << std::endl;
 
 }
 
@@ -119,7 +135,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
    *   (look at equation 3.33) http://planning.cs.uiuc.edu/node99.html
    */
   
-  
+  std::cout << "Updating weights..." << std::endl;
+
   for (int i = 0; i < num_particles; i++){  // for each particle
     // collect landmarks in range
     vector<LandmarkObs> landmarks_in_range;
@@ -129,6 +146,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         new_landmark.x = landmark.x_f;
         new_landmark.y = landmark.y_f;
         new_landmark.id = landmark.id_i;
+        std::cout << "Found nearby landmark: " << new_landmark.id << std::endl;
       }
     }
     // transform observations to map coordinates
@@ -141,9 +159,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       measurements.push_back(transformed_obs);
     }
     dataAssociation(landmarks_in_range, measurements); // measurements will now be assigned to landmarks
+
     // calculate weights
     double new_weight = 1.0;
+
     for (auto measurement : measurements){
+
+      std::cout << "Calculating prob for " << measurement.id << std::endl;
+
       double denom = (2.0 * M_PI * std_landmark[0] * std_landmark[1]);
       double x = measurement.x;
       double y = measurement.y;
@@ -154,11 +177,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       long double exp_part = exp(-( pow((x-mu_x), 2)/(2*stddev_x) + pow((y-mu_y), 2)/(2*stddev_y)));
       double prob = exp_part / denom;
       new_weight *= prob;
+
+      std::cout << "Prob calculated!" << std::endl;
     }
+    std::cout << "Updating weight #" << i << " of " << weights.size() << std::endl;
     weights[i] = new_weight;
   }
   
-  
+  std::cout << "Weights updated!" << std::endl;
 
 }
 
@@ -169,6 +195,8 @@ void ParticleFilter::resample() {
    * NOTE: You may find std::discrete_distribution helpful here.
    *   http://en.cppreference.com/w/cpp/numeric/random/discrete_distribution
    */
+  std::cout << "Resampling!" << std::endl;
+
   std::random_device rd;
   std::mt19937 gen(rd());
   std::discrete_distribution<> d(weights.begin(), weights.end());
@@ -180,6 +208,9 @@ void ParticleFilter::resample() {
   }
 
   particles = resampled_particles;
+
+  std::cout << "Resampling finished!" << std::endl;
+
 }
 
 void ParticleFilter::SetAssociations(Particle& particle, 
