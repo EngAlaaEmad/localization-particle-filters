@@ -52,6 +52,10 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
     particles.push_back(new_particle);
   }
 
+  // Initialize vector of weights
+  vector<double> init_weights(num_particles, 1.0);
+  weights = init_weights;
+
   std::cout << "Particle filter initialized!" << std::endl;
 
 }
@@ -180,7 +184,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
       std::cout << "Prob calculated!" << std::endl;
     }
-    std::cout << "Updating weight #" << i << " of " << weights.size() << std::endl;
+
+    std::cout << "Updating weights: " << i << " of " << weights.size() << std::endl;
     weights[i] = new_weight;
   }
   
