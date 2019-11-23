@@ -149,10 +149,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       double y = measurement.y;
       double mu_x = map_landmarks.landmark_list[measurement.id - 1].x_f;  // cheating a bit because landmarks are in a row
       double mu_y = map_landmarks.landmark_list[measurement.id - 1].y_f;  // this is messed up
-      double exp_part = exp(-( pow(x-mu_x , 2)/(2*pow(std_landmark[1], 2)) + pow(y-mu_y, 2)/(2*pow(std_landmark[1], 2))));
+      double stddev_x = pow(std_landmark[0], 2);
+      double stddev_y = pow(std_landmark[1], 2);
+      long double exp_part = exp(-( pow((x-mu_x), 2)/(2*stddev_x) + pow((y-mu_y), 2)/(2*stddev_y)));
       double prob = exp_part / denom;
       new_weight *= prob;
     }
+    weights[i] = new_weight;
   }
   
   
@@ -169,11 +172,13 @@ void ParticleFilter::resample() {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::discrete_distribution<> d(weights.begin(), weights.end());
-  // generate num with d(gen)
+
   vector<Particle> resampled_particles;
+
   for (int i = 0; i < num_particles; i++){
     resampled_particles.push_back(particles[d(gen)]);
   }
+
   particles = resampled_particles;
 }
 
