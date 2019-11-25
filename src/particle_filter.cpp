@@ -114,21 +114,16 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
    */
 
   std::cout << "Starting data association..." << std::endl;
-  std::cout << "Predicted measurements: " << predicted.size() << std::endl;
-  std::cout << "Observations: " << observations.size() << std::endl;
 
   for (int i = 0; i < observations.size(); i++){   // for each observation
     double min_dist = __DBL_MAX__;
-    std::cout << "OBS" << i << ": " << observations[i].x << "," << observations[i].y << std::endl;
+
     for (auto landmark_pred : predicted){   // check all nearby landmarks, find the closest one
       double curr_dist = dist(observations[i].x, observations[i].y, landmark_pred.x, landmark_pred.y);
-      std::cout << "Current distance: " << curr_dist << std::endl;
       if (curr_dist < min_dist){
         min_dist = curr_dist;
         observations[i].id = landmark_pred.id; // assign a landmark ID to each measurement
       }
-      std::cout << "Minimum distance: " << min_dist << std::endl;
-      std::cout << "Nearest neighbor for OBS " << i << ": " << observations[i].id << std::endl;
 
     }
     
@@ -158,7 +153,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
   std::cout << "Updating weights..." << std::endl;
 
   for (int i = 0; i < num_particles; i++){  // for each particle
-    std::cout << "PARTICLE #" << i << " at " << particles[i].x << ", " << particles[i].y << std::endl;
     // collect landmarks in range
     vector<LandmarkObs> landmarks_in_range;
     for (auto landmark : map_landmarks.landmark_list){
@@ -168,7 +162,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
         new_landmark.y = landmark.y_f;
         new_landmark.id = landmark.id_i;
         landmarks_in_range.push_back(new_landmark);
-        std::cout << "Found nearby landmark: " << new_landmark.id << std::endl;
       }
     }
     // transform observations to map coordinates
@@ -184,9 +177,6 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       particles[i].sense_y.push_back(transformed_obs.y);
       measurements.push_back(transformed_obs);
     }
-    for (int i = 0; i < measurements.size(); i++){
-      std::cout << "Measurement ID: " << measurements[i].id << std::endl;
-    }
 
     dataAssociation(landmarks_in_range, measurements); // measurements will now be assigned to landmarks
     
@@ -196,16 +186,10 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     }
     particles[i].associations = associations;
 
-    for (int i = 0; i < measurements.size(); i++){
-      std::cout << "Measurement ID: " << measurements[i].id << std::endl;
-    }
-
     // calculate weights
     double new_weight = 1.0;
 
     for (auto measurement : measurements){
-
-      std::cout << "Calculating prob for " << measurement.id << std::endl;
 
       double denom = (2.0 * M_PI * std_landmark[0] * std_landmark[1]);
       double x = measurement.x;
@@ -217,11 +201,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       long double exp_part = exp(-( pow((x-mu_x), 2)/(2*stddev_x) + pow((y-mu_y), 2)/(2*stddev_y)));
       double prob = exp_part / denom;
       new_weight *= prob;
-
-      std::cout << "Prob = " << prob << std::endl;
     }
 
-    std::cout << "Updating weights: " << i << " of " << weights.size() << std::endl;
     weights[i] = new_weight;
   }
   
