@@ -124,7 +124,7 @@ void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted,
     }
     
   }
-
+  
   std::cout << "Data association finished!" << std::endl;
 
 }
@@ -163,12 +163,16 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       }
     }
     // transform observations to map coordinates
+    particles[i].sense_x.clear();
+    particles[i].sense_y.clear();
     vector<LandmarkObs> measurements;
     for (int j = 0; j < observations.size(); j++){
       LandmarkObs transformed_obs;
       transformed_obs.x = particles[i].x + observations[j].x * cos(particles[i].theta) - observations[j].y * sin(particles[i].theta);
       transformed_obs.y = particles[i].y + observations[j].x * sin(particles[i].theta) + observations[j].y * cos(particles[i].theta);
       // data association between transformed obs and map landmarks (?)
+      particles[i].sense_x.push_back(transformed_obs.x);
+      particles[i].sense_y.push_back(transformed_obs.y);
       measurements.push_back(transformed_obs);
     }
     for (int i = 0; i < measurements.size(); i++){
@@ -177,6 +181,12 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
     dataAssociation(landmarks_in_range, measurements); // measurements will now be assigned to landmarks
     
+    vector<int> associations;
+    for (int m = 0; m < measurements.size(); m++){
+      associations.push_back(measurements[m].id);
+    }
+    particles[i].associations = associations;
+
     for (int i = 0; i < measurements.size(); i++){
       std::cout << "Measurement ID: " << measurements[i].id << std::endl;
     }
