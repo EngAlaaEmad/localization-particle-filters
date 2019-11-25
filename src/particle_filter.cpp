@@ -199,7 +199,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
       double prob = exp_part / denom;
       new_weight *= prob;
 
-      std::cout << "Prob calculated!" << std::endl;
+      std::cout << "Prob = " << prob << std::endl;
     }
 
     std::cout << "Updating weights: " << i << " of " << weights.size() << std::endl;
