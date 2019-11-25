@@ -166,8 +166,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     vector<LandmarkObs> measurements;
     for (int j = 0; j < observations.size(); j++){
       LandmarkObs transformed_obs;
-      transformed_obs.x = particles[i].x + observations[i].x * cos(particles[i].theta) - observations[i].y * sin(particles[i].theta);
-      transformed_obs.y = particles[i].y + observations[i].x * sin(particles[i].theta) + observations[i].y * cos(particles[i].theta);
+      transformed_obs.x = particles[i].x + observations[j].x * cos(particles[i].theta) - observations[j].y * sin(particles[i].theta);
+      transformed_obs.y = particles[i].y + observations[j].x * sin(particles[i].theta) + observations[j].y * cos(particles[i].theta);
       // data association between transformed obs and map landmarks (?)
       measurements.push_back(transformed_obs);
     }
