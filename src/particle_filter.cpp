@@ -85,7 +85,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
     }
     else{
       x_pred = particles[i].x + (velocity / yaw_rate) * (sin(theta_pred) - sin(particles[i].theta));
-      y_pred = particles[i].y + (velocity / yaw_rate) * (cos(particles[i].theta - cos(theta_pred)));
+      y_pred = particles[i].y + (velocity / yaw_rate) * (cos(particles[i].theta) - cos(theta_pred));
     }
     
 
