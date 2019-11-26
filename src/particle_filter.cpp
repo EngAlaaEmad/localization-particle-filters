@@ -93,7 +93,9 @@ void ParticleFilter::prediction(double delta_t, double std_pos[],
     std::normal_distribution<double> dist_y(y_pred, std_pos[1]);
     std::normal_distribution<double> dist_theta(theta_pred, std_pos[2]);
 
-    std::default_random_engine gen;
+    std::random_device rd;
+    unsigned int seed = rd();
+    std::default_random_engine gen(seed);
 
     particles[i].x = dist_x(gen);
     particles[i].y = dist_y(gen);
