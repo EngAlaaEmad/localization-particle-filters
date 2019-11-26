@@ -31,7 +31,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
    *   (and others in this file).
    */
 
-  num_particles = 120;  // TODO: Set the number of particles
+  num_particles = 100;  // TODO: Set the number of particles
 
   // Create normal distributions from initial location estimate
   std::normal_distribution<double> dist_x(x, std[0]);
@@ -210,7 +210,8 @@ void ParticleFilter::resample() {
    */
 
   std::random_device rd;
-  std::mt19937 gen(rd());
+  unsigned int seed = rd();
+  std::default_random_engine gen(seed);
   std::discrete_distribution<> d(weights.begin(), weights.end());
 
   vector<Particle> resampled_particles;
