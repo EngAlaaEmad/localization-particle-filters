@@ -31,7 +31,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
    *   (and others in this file).
    */
 
-  num_particles = 20;  // TODO: Set the number of particles
+  num_particles = 120;  // TODO: Set the number of particles
 
   // Create normal distributions from initial location estimate
   std::normal_distribution<double> dist_x(x, std[0]);
