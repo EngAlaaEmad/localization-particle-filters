@@ -20,8 +20,7 @@ By repeating the [prediction step - update step - resample] cycle, the particles
 
 The steps of a particle filter can be summarized with the following flowchart:
 
-![](https://github.com/gyadam/localization-particle-filters/tree/master/images/flowchart.png =100x)
-
+<img src="./images/flowchart.png" alt="Flowchart of a particle filter" width="500"/>
 
 ## Inputs
 
