@@ -1,12 +1,11 @@
 # Localization with Particle Filters
-This repository was created as a submission for the Localization project of Udacity's Self Driving Car Nanodegree.
-
-The goal of the Localization project was to implement a particle filter in C++ and test it against Udacity's simulator.
+This repository was created as a submission for the Localization project of Udacity's Self Driving Car Nanodegree. The goal of the Localization project was to implement a particle filter in C++ and test it against Udacity's simulator.
 
 
 ## Overview
 The main objective of this project was the localization of a vehicle based on an initial GPS measurement and subsequent measurements of the surrounding landmarks, using a particle filter. The implementation files can be found in the ```src``` directory.
 
+<img src="./images/pf_in_work.png" alt="Localization with the Udacity simulator" width="600"/>
 
 ## Localization and particle filters
 
@@ -68,8 +67,18 @@ Once the install for uWebSocketIO is complete, the main program can be built and
 
 ## Pass criteria for the project
 
-1. **Accuracy**: your particle filter should localize vehicle position and yaw to within the values specified in the parameters `max_translation_error` and `max_yaw_error` in `src/main.cpp`.
+1. **Accuracy**: The particle filter should localize vehicle position and yaw to within the values specified in the parameters ```max_translation_error``` and ```max_yaw_error``` in ```src/main.cpp```.
 
-2. **Performance**: your particle filter should complete execution within the time of 100 seconds.
+2. **Performance**: The particle filter should complete execution within the time of 100 seconds.
 
 ## Results and Summary
+
+The particle filter successfully met the pass criteria on my local machine with the follownig results:
+* `error_x`: 0.116 m
+* `error_y`: 0.108 m
+* `error_theta`: 0.004 rad
+* `time`: 99.58 s
+
+The main issue with this implementation of the particle filter is that is uses the "Nearest Neighbor" method to associate the measurements with landmarks, which has a time complexity of O(n*m), making the filter very slow. This could be improved by using other data association methods, but these where out of the current project's scope.
+
+<img src="./images/end_result.png" alt="Results after running the particle filter" width="600"/>
