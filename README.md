@@ -20,7 +20,7 @@ By repeating the [prediction step - update step - resample] cycle, the particles
 
 The steps of a particle filter can be summarized with the following flowchart:
 
-<img src="./images/flowchart.png" alt="Flowchart of a particle filter" width="500"/>
+<img src="./images/flowchart.png" alt="Flowchart of a particle filter" width="600"/>
 
 ## Inputs
 
