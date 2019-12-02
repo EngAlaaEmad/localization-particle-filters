@@ -5,7 +5,7 @@ This repository was created as a submission for the Localization project of Udac
 ## Overview
 The main objective of this project was the localization of a vehicle based on an initial GPS measurement and subsequent measurements of the surrounding landmarks, using a particle filter. The implementation files can be found in the ```src``` directory.
 
-<img src="./images/pf_in_work.png" alt="Localization with the Udacity simulator" width="600"/>
+<img src="./images/localization.gif" alt="Localization with the Udacity simulator" width="600"/>
 
 ## Localization and particle filters
 
